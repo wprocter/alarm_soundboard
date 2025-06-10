@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alarms</title>
+
+<style>
+    body {
+        background-color: #000;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    .container {
+        margin-top: 50px;
+    }
+
+    button {
+        background-color: #900;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        margin: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+        width:30%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        height:calc(100vh / 6);
+    }
+    button:hover {
+        background-color: #ff0000;
+    }
+    panic {
+        background-color: rgb(255, 170, 0);
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        margin: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+        width:90%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        height:calc(50px);
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+            <button id="danger" onClick="play_sound(this.id)">Danger</button>
+            <button id="dive" onClick="play_sound(this.id)">Dive</button>
+            <button id="evac" onClick="play_sound(this.id)">Evacuate</button>
+        <br>
+            <button id="first_contact" onClick="play_sound(this.id)">Contact</button>
+            <button id="general" onClick="play_sound(this.id)">General Alarm</button>
+            <button id="impact" onClick="play_sound(this.id)">Impact</button>
+        <br>
+            <button id="klaxon" onClick="play_sound(this.id)">Lockdown</button>
+            <button id="navy_buzzer" onClick="play_sound(this.id)">Navy Buzzer</button>
+            <button id="red_alert" onClick="play_sound(this.id)">Red Alert</button>
+        <br>
+            <button id="sonar" onClick="play_sound(this.id)">Sonar</button>
+            <button id="warning" onClick="play_sound(this.id)">Raid</button>
+            <button id="selfdestruct" onClick="play_sound(this.id)">Self Destruct</button>
+        <br>
+            <panic id="stop" onClick="stop_sound()"><br>STOP</panic>
+
+  </div>
+<script type="text/javascript">
+    let currentAudio = null;
+
+    function play_sound(clicked_id) {
+        // Stop and reset current audio if playing
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+        }
+        // Play new audio
+        currentAudio = new Audio(clicked_id + ".mp3");
+        currentAudio.play();
+    }
+
+    function stop_sound() {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+            currentAudio = null;
+        }
+    }
+</script>
+</body>
+</html>
