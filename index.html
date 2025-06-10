@@ -49,6 +49,24 @@
         border-radius: 5px;
         height:calc(50px);
     }
+    .final-row {
+        display: flex;
+        width: 100%;
+        margin-top: 10px;
+    }
+    .final-row button {
+        flex: 1 1 33%;
+        margin-right: 10px;
+        height: 60px;
+    }
+    .final-row panic {
+        flex: 2 1 66%;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
 </style>
 </head>
 <body>
@@ -67,13 +85,23 @@
         <br>
             <button id="sonar" onClick="play_sound(this.id)">Sonar</button>
             <button id="warning" onClick="play_sound(this.id)">Raid</button>
-            <button id="selfdestruct" onClick="play_sound(this.id)">Self Destruct</button>
+            <button id="action" onClick="play_sound(this.id)">Action</button>
+                
         <br>
+        <div class="final-row">
+            <button id="selfdestruct" onmousedown="startSelfDestruct()" onmouseup="cancelSelfDestruct()" onmouseleave="cancelSelfDestruct()" ontouchstart="startSelfDestruct()" ontouchend="cancelSelfDestruct()">
+                <span id="selfdestruct-label">Self Destruct</span>
+                <span id="selfdestruct-countdown" style="display:none; font-size:18px; color:#fff; margin-left:10px;"></span>
+            </button>
             <panic id="stop" onClick="stop_sound()"><br>STOP</panic>
+        </div>
 
   </div>
 <script type="text/javascript">
     let currentAudio = null;
+    let selfDestructTimer = null;
+    let selfDestructCountdown = 5;
+    let selfDestructInterval = null;
 
     function play_sound(clicked_id) {
         // Stop and reset current audio if playing
@@ -92,6 +120,33 @@
             currentAudio.currentTime = 0;
             currentAudio = null;
         }
+    }
+
+    function startSelfDestruct() {
+        const label = document.getElementById('selfdestruct-label');
+        const countdown = document.getElementById('selfdestruct-countdown');
+        selfDestructCountdown = 5;
+        countdown.textContent = selfDestructCountdown;
+        countdown.style.display = 'inline';
+        label.style.display = 'none';
+        selfDestructInterval = setInterval(() => {
+            selfDestructCountdown--;
+            countdown.textContent = selfDestructCountdown;
+            if (selfDestructCountdown <= 0) {
+                clearInterval(selfDestructInterval);
+                countdown.style.display = 'none';
+                label.style.display = 'inline';
+                play_sound('selfdestruct');
+            }
+        }, 1000);
+    }
+
+    function cancelSelfDestruct() {
+        const label = document.getElementById('selfdestruct-label');
+        const countdown = document.getElementById('selfdestruct-countdown');
+        clearInterval(selfDestructInterval);
+        countdown.style.display = 'none';
+        label.style.display = 'inline';
     }
 </script>
 </body>
