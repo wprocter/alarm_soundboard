@@ -89,65 +89,86 @@
                 
         <br>
         <div class="final-row">
-            <button id="selfdestruct" onmousedown="startSelfDestruct()" onmouseup="cancelSelfDestruct()" onmouseleave="cancelSelfDestruct()" ontouchstart="startSelfDestruct()" ontouchend="cancelSelfDestruct()">
+            <button id="selfdestruct" onclick="handleSelfDestruct()">
                 <span id="selfdestruct-label">Self Destruct</span>
                 <span id="selfdestruct-countdown" style="display:none; font-size:18px; color:#fff; margin-left:10px;"></span>
             </button>
-            <panic id="stop" onClick="stop_sound()"><br>STOP</panic>
+            <panic id="stop" onClick="stop_sound()">STOP</panic>
         </div>
 
   </div>
 <script type="text/javascript">
-    let currentAudio = null;
-    let selfDestructTimer = null;
-    let selfDestructCountdown = 5;
-    let selfDestructInterval = null;
+let currentAudio = null;
+let selfDestructArmed = false;
+let selfDestructTimeout = null;
+let selfDestructCountdown = 5;
+let selfDestructInterval = null;
 
-    function play_sound(clicked_id) {
-        // Stop and reset current audio if playing
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio.currentTime = 0;
-        }
-        // Play new audio
-        currentAudio = new Audio(clicked_id + ".mp3");
-        currentAudio.play();
+function play_sound(clicked_id) {
+    // Stop and reset current audio if playing
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
     }
+    // Play new audio
+    currentAudio = new Audio(clicked_id + ".mp3");
+    currentAudio.play();
+}
 
-    function stop_sound() {
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio.currentTime = 0;
-            currentAudio = null;
-        }
+function stop_sound() {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
     }
+}
 
-    function startSelfDestruct() {
-        const label = document.getElementById('selfdestruct-label');
-        const countdown = document.getElementById('selfdestruct-countdown');
+function handleSelfDestruct() {
+    const btn = document.getElementById('selfdestruct');
+    const label = document.getElementById('selfdestruct-label');
+    const countdown = document.getElementById('selfdestruct-countdown');
+    if (!selfDestructArmed) {
+        // Arm the button
+        selfDestructArmed = true;
+        label.textContent = 'Tap again to CONFIRM!';
+        btn.style.backgroundColor = '#ff0000';
+        btn.style.color = '#fff';
         selfDestructCountdown = 5;
         countdown.textContent = selfDestructCountdown;
         countdown.style.display = 'inline';
-        label.style.display = 'none';
         selfDestructInterval = setInterval(() => {
             selfDestructCountdown--;
             countdown.textContent = selfDestructCountdown;
             if (selfDestructCountdown <= 0) {
                 clearInterval(selfDestructInterval);
+                selfDestructArmed = false;
+                label.textContent = 'Self Destruct';
                 countdown.style.display = 'none';
-                label.style.display = 'inline';
-                play_sound('selfdestruct');
+                btn.style.backgroundColor = '';
+                btn.style.color = '';
             }
         }, 1000);
-    }
-
-    function cancelSelfDestruct() {
-        const label = document.getElementById('selfdestruct-label');
-        const countdown = document.getElementById('selfdestruct-countdown');
+        // Reset after 5 seconds if not confirmed
+        selfDestructTimeout = setTimeout(() => {
+            clearInterval(selfDestructInterval);
+            selfDestructArmed = false;
+            label.textContent = 'Self Destruct';
+            countdown.style.display = 'none';
+            btn.style.backgroundColor = '';
+            btn.style.color = '';
+        }, 5000);
+    } else {
+        // Confirmed
+        clearTimeout(selfDestructTimeout);
         clearInterval(selfDestructInterval);
+        selfDestructArmed = false;
+        label.textContent = 'Self Destruct';
         countdown.style.display = 'none';
-        label.style.display = 'inline';
+        btn.style.backgroundColor = '';
+        btn.style.color = '';
+        play_sound('selfdestruct');
     }
+}
 </script>
 </body>
 </html>
